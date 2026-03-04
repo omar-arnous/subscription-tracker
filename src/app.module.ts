@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { UsersController } from './users/users.controller';
 
 @Module({
   imports: [
@@ -7,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
   ],
-  controllers: [],
+  controllers: [UsersController],
   providers: [],
 })
 export class AppModule {}
