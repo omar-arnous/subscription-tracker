@@ -81,5 +81,7 @@ export class UsersService {
     const user = await this.findOne(id);
     // TODO: delete all this user subscriptions and payments
     await this.userService.remove(user);
+
+    return { message: 'User deleted successfully' };
   }
 }

@@ -13,16 +13,10 @@ export class AuthService {
   ) {}
 
   async signUp(createUserDto: CreateUserDto) {
-    let user = await this.usersService.findByEmail(createUserDto.email);
-
-    if (user) {
-      throw new BadRequestException('Email already exists');
-    }
-
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(createUserDto.password, salt);
 
-    user = await this.usersService.createUser(createUserDto, hashed);
+    const user = await this.usersService.createUser(createUserDto, hashed);
 
     const secret = this.configService.get<string>('JWT_SECRET', 'secret');
     const expiresIn = this.configService.get<jwt.SignOptions['expiresIn']>(
