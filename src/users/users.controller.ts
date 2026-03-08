@@ -35,6 +35,6 @@ export class UsersController {
   @Version('1')
   @Delete('/:id')
   deleteUser(@Param('id') id: string) {
-    return 'DELETE users/' + id;
+    return this.usersService.deleteUser(id);
   }
 }

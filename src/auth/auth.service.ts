@@ -22,7 +22,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(createUserDto.password, salt);
 
-    user = await this.usersService.create(createUserDto, hashed);
+    user = await this.usersService.createUser(createUserDto, hashed);
 
     const secret = this.configService.get<string>('JWT_SECRET', 'secret');
     const expiresIn = this.configService.get<jwt.SignOptions['expiresIn']>(

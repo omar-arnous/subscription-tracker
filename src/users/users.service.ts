@@ -61,5 +61,25 @@ export class UsersService {
     return this.userService.save(user);
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto) {}
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
+
+    if (updateUserDto.email && updateUserDto.email !== user.email) {
+      const existingUser = await this.userService.findOne({
+        where: { email: updateUserDto.email },
+      });
+
+      if (existingUser) {
+        throw new BadRequestException('Email already registered');
+      }
+    }
+    Object.assign(user, updateUserDto);
+    return this.userService.save(user);
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.findOne(id);
+    // TODO: delete all this user subscriptions and payments
+    await this.userService.remove(user);
+  }
 }
