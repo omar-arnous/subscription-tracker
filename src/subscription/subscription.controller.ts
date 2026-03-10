@@ -1,4 +1,5 @@
 import {
+  dy,
   Controller,
   Delete,
   Get,
@@ -9,10 +10,12 @@ import {
   Put,
   UseGuards,
   Version,
+  Body,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 
-@Controller('subscription')
+@Controller('subscriptions')
 export class SubscriptionController {
   @Version('1')
   @Get('/')
@@ -22,13 +25,13 @@ export class SubscriptionController {
 
   @Version('1')
   @Get('/:id')
-  getSubscriptionDetails(@Param() id) {
+  getSubscriptionDetails(@Param('id') id: string) {
     return `GET/ Subscription ${id} Details`;
   }
 
   @Version('1')
   @Get('/user/:id')
-  getUserSubscriptions(@Param() id) {
+  getUserSubscriptions(@Param('id') id: string) {
     return `GET/ user ${id} Subscriptions`;
   }
 
@@ -42,28 +45,28 @@ export class SubscriptionController {
   @UseGuards(AuthGuard)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  createSubscription() {
+  createSubscription(@Body() createSubscription: CreateSubscriptionDto) {
     return 'POST/ create subsctiption';
   }
 
   @Version('1')
   @UseGuards(AuthGuard)
   @Put('/:id')
-  updateSubscription() {
-    return 'PUT/ update subsctiption';
+  updateSubscription(@Param('id') id: string) {
+    return `PUT/ update ${id} subsctiption`;
   }
 
   @Version('1')
   @UseGuards(AuthGuard)
   @Put('/:id/cancel')
-  cancelSubscription() {
-    return 'PUT/ cancel subsctiption';
+  cancelSubscription(@Param('id') id: string) {
+    return `PUT/ cancel ${id} subsctiption`;
   }
 
   @Version('1')
   @UseGuards(AuthGuard)
-  @Delete('/')
-  deleteSubscription() {
-    return 'DELETE/ delete subsctiption';
+  @Delete('/:id')
+  deleteSubscription(@Param('id') id: string) {
+    return `DELETE/ delete ${id} subsctiption`;
   }
 }

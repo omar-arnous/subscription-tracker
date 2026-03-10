@@ -29,7 +29,6 @@ import { SubscriptionModule } from './subscription/subscription.module';
         synchronize: true, // Note: set to false in production
       }),
     }),
-    SubscriptionModule,
   ],
   controllers: [],
   providers: [],
