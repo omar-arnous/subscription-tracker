@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
         synchronize: true, // Note: set to false in production
       }),
     }),
+    SubscriptionModule,
   ],
   controllers: [],
   providers: [],
