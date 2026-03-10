@@ -14,6 +14,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
 
     UsersModule,
     AuthModule,
+    SubscriptionModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
