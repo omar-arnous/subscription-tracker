@@ -42,7 +42,7 @@ export class SubscriptionController {
   @Version('1')
   @Get('/user/:id')
   getUserSubscriptions(@Param('id') id: string) {
-    return `GET/ user ${id} Subscriptions`;
+    return this.subscriptionService.findByUserId(parseInt(id));
   }
 
   @Version('1')

@@ -1,3 +1,4 @@
+import { UsersService } from './../users/users.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Frequency, Subscription } from './entities/subscription.entity';
 import { Repository } from 'typeorm';
@@ -12,6 +13,7 @@ export class SubscriptionService {
   constructor(
     @InjectRepository(Subscription)
     private readonly subscriptionService: Repository<Subscription>,
+    private readonly usersService: UsersService,
     private readonly workflowConfig: WorkflowConfig,
     private readonly configService: ConfigService,
   ) {}
@@ -57,6 +59,7 @@ export class SubscriptionService {
       renewalDate: renewal,
       user: user,
     });
+    await this.subscriptionService.save(subscription);
 
     const url = this.configService.get<string>('SERVER_URL');
 
@@ -70,5 +73,18 @@ export class SubscriptionService {
     });
 
     return { subscription, workflowRunId };
+  }
+
+  async findByUserId(userId: number) {
+    const subscriptions = await this.subscriptionService.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+
+    if (!subscriptions) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    return subscriptions;
   }
 }
