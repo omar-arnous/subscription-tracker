@@ -1,5 +1,5 @@
+import type { Request } from 'express';
 import {
-  dy,
   Controller,
   Delete,
   Get,
@@ -14,9 +14,19 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+import { SubscriptionService } from './subscription.service';
+import { GetUser } from 'src/get-user/get-user.decorator';
+import { User } from 'src/users/entities/user.entity';
+
+export type JwtPayload = {
+  id: number;
+  email: string;
+};
 
 @Controller('subscriptions')
 export class SubscriptionController {
+  constructor(private readonly subscriptionService: SubscriptionService) {}
+
   @Version('1')
   @Get('/')
   getAllSubscriptions() {
@@ -45,8 +55,14 @@ export class SubscriptionController {
   @UseGuards(AuthGuard)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  createSubscription(@Body() createSubscription: CreateSubscriptionDto) {
-    return 'POST/ create subsctiption';
+  createSubscription(
+    @Body() createSubscriptionDto: CreateSubscriptionDto,
+    // @Req() req: Request,
+    @GetUser() user: User,
+  ) {
+    // const user = req['user'];
+
+    return this.subscriptionService.subscribe(createSubscriptionDto, user);
   }
 
   @Version('1')

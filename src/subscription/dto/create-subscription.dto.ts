@@ -2,8 +2,8 @@ import {
   IsDateString,
   IsEnum,
   IsNumber,
+  IsOptional,
   IsString,
-  MaxDate,
 } from 'class-validator';
 import {
   Category,
@@ -29,14 +29,9 @@ export class CreateSubscriptionDto {
   paymentMethod: string;
 
   @IsEnum(Status)
-  status: Status;
+  @IsOptional()
+  status?: Status;
 
   @IsDateString()
-  @MaxDate(new Date(), {
-    message: 'Start date must be in the past',
-  })
   startDate: Date;
-
-  @IsDateString()
-  renewalDate: Date;
 }
