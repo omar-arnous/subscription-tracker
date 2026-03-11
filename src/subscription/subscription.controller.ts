@@ -36,7 +36,7 @@ export class SubscriptionController {
   @Version('1')
   @Get('/:id')
   getSubscriptionDetails(@Param('id') id: string) {
-    return `GET/ Subscription ${id} Details`;
+    return this.subscriptionService.findById(+id);
   }
 
   @Version('1')
@@ -62,7 +62,7 @@ export class SubscriptionController {
   ) {
     // const user = req['user'];
 
-    return this.subscriptionService.subscribe(createSubscriptionDto, user);
+    return this.subscriptionService.creatre(createSubscriptionDto, user);
   }
 
   @Version('1')

@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Frequency, Subscription } from './entities/subscription.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { User } from 'src/users/entities/user.entity';
+import { WorkflowConfig } from 'src/workflow/workflow.config';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SubscriptionService {
   constructor(
     @InjectRepository(Subscription)
     private readonly subscriptionService: Repository<Subscription>,
+    private readonly workflowConfig: WorkflowConfig,
+    private readonly configService: ConfigService,
   ) {}
 
   calculateRenewalDate = (startDate: Date, frequency: Frequency): Date => {
@@ -32,7 +36,19 @@ export class SubscriptionService {
     return date;
   };
 
-  subscribe(createSubscription: CreateSubscriptionDto, user: User) {
+  async findById(subscriptionId: number) {
+    const subscription = await this.subscriptionService.findOne({
+      where: { id: subscriptionId },
+    });
+
+    if (!subscription) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    return subscription;
+  }
+
+  async creatre(createSubscription: CreateSubscriptionDto, user: User) {
     const { startDate, frequency } = createSubscription;
     const renewal = this.calculateRenewalDate(startDate, frequency);
 
@@ -42,6 +58,17 @@ export class SubscriptionService {
       user: user,
     });
 
-    return { subscription };
+    const url = this.configService.get<string>('SERVER_URL');
+
+    const { workflowRunId } = await this.workflowConfig.client.trigger({
+      url: `${url}/api/v1/workflows/subscription/reminder`,
+      body: {
+        subscriptionId: subscription.id,
+      },
+      headers: { 'content-type': 'application/json' },
+      retries: 0,
+    });
+
+    return { subscription, workflowRunId };
   }
 }

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { WorkflowModule } from './workflow/workflow.module';
 
 @Module({
   imports: [
@@ -11,10 +12,6 @@ import { SubscriptionModule } from './subscription/subscription.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-
-    UsersModule,
-    AuthModule,
-    SubscriptionModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -29,8 +26,10 @@ import { SubscriptionModule } from './subscription/subscription.module';
         synchronize: true, // Note: set to false in production
       }),
     }),
+    WorkflowModule,
+    UsersModule,
+    AuthModule,
+    SubscriptionModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
